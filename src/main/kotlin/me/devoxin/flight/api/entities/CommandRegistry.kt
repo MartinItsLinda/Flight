@@ -1,14 +1,15 @@
 package me.devoxin.flight.api.entities
 
 import me.devoxin.flight.api.CommandFunction
+import me.devoxin.flight.api.annotations.Group
 import me.devoxin.flight.api.context.ContextType.SLASH
 import me.devoxin.flight.internal.arguments.Argument
 import me.devoxin.flight.internal.entities.Jar
 import me.devoxin.flight.internal.utils.Indexer
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.interactions.commands.build.Commands
-import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandGroupData
 import org.slf4j.LoggerFactory
 
 class CommandRegistry : HashMap<String, CommandFunction>() {
@@ -23,6 +24,7 @@ class CommandRegistry : HashMap<String, CommandFunction>() {
                 .setNSFW(command.properties.nsfw)
 
             if (command.subcommands.isNotEmpty()) {
+                val groups = mutableMapOf<Group, MutableList<SubcommandData>>() //group name, group data
                 for (sc in command.subcommands.values.toSet()) {
                     val scData = SubcommandData(sc.name, sc.properties.description)
 
@@ -30,7 +32,19 @@ class CommandRegistry : HashMap<String, CommandFunction>() {
                         scData.addOptions(sc.arguments.map(Argument::asSlashCommandType))
                     }
 
-                    data.addSubcommands(scData)
+                    val group = sc.properties.group
+                    if (group.name.isNotBlank()) {
+                        groups.computeIfAbsent(group) { mutableListOf() }.add(scData)
+                    } else {
+                        data.addSubcommands(scData)
+                    }
+                }
+
+                for ((group, subCommands) in groups) {
+                    val scgData = SubcommandGroupData(group.name, group.description)
+                    scgData.addSubcommands(subCommands)
+
+                    data.addSubcommandGroups(scgData)
                 }
             } else if (command.arguments.isNotEmpty()) {
                 data.addOptions(command.arguments.map(Argument::asSlashCommandType))

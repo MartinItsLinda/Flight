@@ -128,6 +128,14 @@ class CommandClient(
     private fun onSlashCommand(event: SlashCommandInteractionEvent) {
         val cmd = commands[event.name] ?: return
         val subcommand = event.subcommandName?.let { cmd.subcommands[it] ?: return }
+
+        if (subcommand != null &&
+            event.subcommandGroup != null &&
+            event.subcommandGroup != subcommand.properties.group.name
+        ) {
+            return
+        }
+
         val invoked = subcommand ?: cmd
         val ctx = SlashContext(this, event, invoked)
 

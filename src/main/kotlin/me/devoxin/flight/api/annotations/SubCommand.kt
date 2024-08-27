@@ -13,5 +13,7 @@ package me.devoxin.flight.api.annotations
 annotation class SubCommand(
     val aliases: Array<String> = [],
     val description: String = "No description available",
-    val guildOnly: Boolean = false
-)
+    val guildOnly: Boolean = false,
+    val group: Group = Group("", "")
+) {
+}
