@@ -136,6 +136,7 @@ class MessageContext(
         }
 
         val builder = MessageCreateBuilder()
+            .setAllowedMentions(Context.ALLOWED_MENTIONS)
         messageOpts?.let(builder::apply)
 
         files.takeIf { it.isNotEmpty() }?.let {

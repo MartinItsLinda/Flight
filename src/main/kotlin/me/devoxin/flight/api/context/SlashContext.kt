@@ -45,7 +45,7 @@ class SlashContext(
      * Use [respond] or [respondAsync] to handle things such as deferral or already acknowledged events.
      */
     fun reply(content: String, ephemeral: Boolean = false) {
-        event.reply(content).setEphemeral(ephemeral).queue { replied = true }
+        event.reply(content).setEphemeral(ephemeral).setAllowedMentions(Context.ALLOWED_MENTIONS).queue { replied = true }
     }
 
     /**
@@ -65,7 +65,7 @@ class SlashContext(
      * Use [respond] or [respondAsync] to handle things such as deferral or already acknowledged events.
      */
     fun reply(message: MessageCreateData, ephemeral: Boolean = false) {
-        event.reply(message).setEphemeral(ephemeral).queue { replied = true }
+        event.reply(message).setEphemeral(ephemeral).setAllowedMentions(Context.ALLOWED_MENTIONS).queue { replied = true }
     }
 
     /**
@@ -73,7 +73,7 @@ class SlashContext(
      * Use [respond] or [respondAsync] to handle things such as deferral or already acknowledged events.
      */
     suspend fun replyAsync(content: String, ephemeral: Boolean = false): InteractionHook {
-        return event.reply(content).setEphemeral(ephemeral).submit().thenApply { replied = true; it }.await()
+        return event.reply(content).setEphemeral(ephemeral).setAllowedMentions(Context.ALLOWED_MENTIONS).submit().thenApply { replied = true; it }.await()
     }
 
     /**
@@ -100,14 +100,14 @@ class SlashContext(
      * This will only call [InteractionHook.sendMessage] with no special handling.
      */
     fun send(message: MessageCreateData, ephemeral: Boolean = false) {
-        event.hook.sendMessage(message).setEphemeral(ephemeral).queue()
+        event.hook.sendMessage(message).setEphemeral(ephemeral).setAllowedMentions(Context.ALLOWED_MENTIONS).queue()
     }
 
     /**
      * This will only call [InteractionHook.sendMessage] with no special handling.
      */
     suspend fun sendAsync(message: MessageCreateData, ephemeral: Boolean = false): Message {
-        return event.hook.sendMessage(message).setEphemeral(ephemeral).submit().await()
+        return event.hook.sendMessage(message).setEphemeral(ephemeral).setAllowedMentions(Context.ALLOWED_MENTIONS).submit().await()
     }
 
     /**
@@ -163,9 +163,9 @@ class SlashContext(
 
     internal fun respond0(message: MessageCreateData, ephemeral: Boolean = false): CompletableFuture<*> {
         return when {
-            replied -> event.hook.sendMessage(message).setEphemeral(ephemeral).submit()
-            deferred -> event.hook.editOriginal(MessageEditData.fromCreateData(message)).submit().thenApply { replied = true; it }
-            else -> event.reply(message).setEphemeral(ephemeral).submit().thenApply { replied = true; it }
+            replied -> event.hook.sendMessage(message).setAllowedMentions(Context.ALLOWED_MENTIONS).setEphemeral(ephemeral).submit()
+            deferred -> event.hook.editOriginal(MessageEditData.fromCreateData(message)).setAllowedMentions(Context.ALLOWED_MENTIONS).submit().thenApply { replied = true; it }
+            else -> event.reply(message).setEphemeral(ephemeral).setAllowedMentions(Context.ALLOWED_MENTIONS).submit().thenApply { replied = true; it }
         }
     }
 }

@@ -6,12 +6,14 @@ import me.devoxin.flight.internal.entities.Executable
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel
 import net.dv8tion.jda.api.events.Event
 import net.dv8tion.jda.api.utils.FileUpload
 import net.dv8tion.jda.api.utils.messages.MessageCreateData
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 interface Context {
@@ -157,5 +159,9 @@ interface Context {
      */
     fun <T: Event> waitFor(event: Class<T>, predicate: (T) -> Boolean, timeout: Long): CompletableFuture<T> {
         return commandClient.waitFor(event, predicate, timeout)
+    }
+
+    companion object {
+        var ALLOWED_MENTIONS = EnumSet.allOf(Message.MentionType::class.java)
     }
 }
