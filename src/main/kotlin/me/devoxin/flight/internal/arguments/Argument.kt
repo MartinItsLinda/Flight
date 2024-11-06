@@ -7,10 +7,7 @@ import me.devoxin.flight.api.annotations.Choices
 import me.devoxin.flight.api.annotations.Describe
 import me.devoxin.flight.api.annotations.Range
 import me.devoxin.flight.api.entities.Cog
-import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.Role
-import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel
@@ -190,7 +187,9 @@ class Argument(
             TextChannel::class.java to OptionType.CHANNEL,
             VoiceChannel::class.java to OptionType.CHANNEL,
             Role::class.java to OptionType.ROLE,
-            Message.Attachment::class.java to OptionType.ATTACHMENT
+            Message.Attachment::class.java to OptionType.ATTACHMENT,
+
+            Invite::class.java to OptionType.STRING
         )
     }
 }
