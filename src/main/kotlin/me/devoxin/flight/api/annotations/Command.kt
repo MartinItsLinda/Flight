@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.Permission
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 annotation class Command(
+    val name: String = "",
     // The character to use to delimit arguments.
     val argDelimiter: Char = ' ',
     // Any alternative triggers for the command. The name of the command need not be listed here.

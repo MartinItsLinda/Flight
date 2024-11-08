@@ -11,6 +11,7 @@ package me.devoxin.flight.api.annotations
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 annotation class SubCommand(
+    val name: String = "",
     val aliases: Array<String> = [],
     val description: String = "No description available",
     val guildOnly: Boolean = false,

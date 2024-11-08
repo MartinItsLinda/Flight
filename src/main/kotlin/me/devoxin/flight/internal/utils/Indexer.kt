@@ -77,8 +77,8 @@ class Indexer {
         val categoryOriginal = cog.name()
             ?: cog::class.java.`package`.name.split('.').last().replace('_', ' ')
         val category = TextUtils.capitalise(categoryOriginal)
-        val name = meth.name.lowercase()
         val properties = meth.findAnnotation<Command>()!!
+        val name = properties.name.takeIf { it.isNotBlank() } ?: meth.name.lowercase()
         val cooldown = meth.findAnnotation<Cooldown>()
         val ctxParam = meth.valueParameters.firstOrNull { it.type.isSubtypeOf(Context::class.starProjectedType) }
 
@@ -114,8 +114,8 @@ class Indexer {
         require(meth.javaMethod!!.declaringClass == cog::class.java) { "${meth.name} is not from ${cog::class.simpleName}" }
         require(meth.hasAnnotation<SubCommand>()) { "${meth.name} is not annotated with SubCommand!" }
 
-        val name = meth.name.lowercase()
         val properties = meth.findAnnotation<SubCommand>()!!
+        val name = properties.name.takeIf { it.isNotBlank() } ?: meth.name.lowercase()
         val ctxParam = meth.valueParameters.firstOrNull { it.type.isSubtypeOf(Context::class.starProjectedType) }
 
         require(ctxParam != null) { "${meth.name} is missing the Context parameter!" }
